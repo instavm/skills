@@ -1,0 +1,10 @@
+{
+  "name": "instavm",
+  "version": "1.0.0",
+  "description": "InstaVM tools for Claude Code",
+  "author": {
+    "name": "InstaVM",
+    "email": "hello@instavm.io"
+  },
+  "repository": "https://github.com/instavm/skills"
+}

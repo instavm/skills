@@ -1,0 +1,4 @@
+interface:
+  display_name: "Use InstaVM"
+  short_description: "Operate InstaVM VMs, snapshots, SSH, egress, and volumes"
+  default_prompt: "Use $use-instavm to operate InstaVM infrastructure for this task."

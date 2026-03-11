@@ -1,6 +1,6 @@
-# InstaVM Skill
+# InstaVM Skills
 
-Agent skill for InstaVM, following the Agent Skills format.
+Agent skill set for [InstaVM](https://instavm.io), following the [Agent Skills](https://agentskills.io) format.
 
 ## Installation
 
@@ -30,13 +30,13 @@ Install the plugin:
 
 This repo currently ships one installable skill:
 
-- `instavm`
+- [`use-instavm`](plugins/instavm/skills/use-instavm/SKILL.md)
 
-`instavm` is operational and SDK-first. It tells agents when to use sessions vs durable VMs, how to work with snapshots, SSH, shares, egress, and volumes, and when to fall back to raw REST calls if the installed SDK lags the docs.
+`use-instavm` is route-first. Intent routing is defined in `SKILL.md`, and execution details are split into action-oriented references. It is SDK-first today, with a clean future path for a native InstaVM CLI route.
 
 ## Workflow Coverage
 
-`instavm` covers:
+`use-instavm` covers:
 
 - ephemeral code execution sessions
 - durable VM lifecycle operations
@@ -51,21 +51,34 @@ This repo currently ships one installable skill:
 ## Repository Structure
 
 ```text
-skill/
+skills/
 ├── .claude-plugin/
 │   └── marketplace.json
-├── agents/
-│   └── openai.yaml
-├── SKILL.md
+├── plugins/
+│   └── instavm/
+│       ├── .claude-plugin/
+│       │   └── plugin.json
+│       └── skills/
+│           └── use-instavm/
+│               ├── agents/
+│               │   └── openai.yaml
+│               ├── references/
+│               │   ├── access.md
+│               │   ├── cli.md
+│               │   ├── compute.md
+│               │   ├── platform.md
+│               │   ├── setup.md
+│               │   └── storage.md
+│               └── SKILL.md
 └── README.md
 ```
 
 ## Development Notes
 
-- Keep `SKILL.md` concise and action-oriented.
+- Keep `SKILL.md` concise and routing-focused.
+- Keep workflow behavior in action-oriented references.
 - Prefer installed SDK method names over docs or memory.
-- Use raw HTTP only when the installed SDK is missing the needed helper.
-- Keep examples practical and easy for agents to adapt.
+- Add future native CLI guidance in `references/cli.md` rather than bloating the main skill file.
 
 ## References
 

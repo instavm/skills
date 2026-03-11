@@ -7,7 +7,7 @@ Agent skill for InstaVM, following the Agent Skills format.
 Install with the `skills` CLI:
 
 ```bash
-npx skills add instavm/skill
+npx skills add instavm/skills
 ```
 
 Supports Codex, Claude Code, Cursor, OpenCode, and other agents supported by `skills`.
@@ -17,7 +17,7 @@ Supports Codex, Claude Code, Cursor, OpenCode, and other agents supported by `sk
 Add the marketplace:
 
 ```text
-/plugin marketplace add instavm/skill
+/plugin marketplace add instavm/skills
 ```
 
 Install the plugin:

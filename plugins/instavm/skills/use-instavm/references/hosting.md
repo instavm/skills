@@ -23,8 +23,10 @@ Host a static site or small app on InstaVM without rediscovering the same deploy
 
 Never rely on the default lifetime for user-facing hosting. Set `vm_lifetime_seconds` explicitly or update it immediately after creation.
 
+Treat `604800` as untrusted unless the live API or account docs explicitly allow it. If you need a safe default, assume `<=86400` seconds.
+
 ```python
-vm = client.vms.create(wait=True, vm_lifetime_seconds=604800)
+vm = client.vms.create(wait=True, vm_lifetime_seconds=86400)
 vm_id = vm["vm_id"]
 vm = client.vms.get(vm_id)
 ```
@@ -79,7 +81,7 @@ with socketserver.TCPServer(("0.0.0.0", PORT), Handler) as httpd:
     httpd.serve_forever()
 '''
 
-task = client.execute_async(server_code, language="python", timeout=604800)
+task = client.execute_async(server_code, language="python", timeout=86400)
 ```
 
 Then confirm the task is still running before you claim success.

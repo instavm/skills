@@ -84,6 +84,7 @@ Use a read-back call after mutation so the user gets the resulting state, not ju
 ## VM creation gotchas
 
 - Do not rely on the default VM lifetime. Set `vm_lifetime_seconds` explicitly for anything user-facing.
+- Unless the live API or account docs say otherwise, treat `86400` seconds as the practical upper bound and do not assume multi-day lifetimes are supported.
 - After creation, read back the VM record and keep `vm_id`, `status`, and `session_id` if the API returns them.
 - If a rich create payload is rejected, do not guess field combinations repeatedly. Capture the real validation body, retry with a minimal create payload, then patch fields with `client.vms.update(...)`.
 

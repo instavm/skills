@@ -1,0 +1,4 @@
+interface:
+  display_name: "InstaVM"
+  short_description: "Manage InstaVM VMs, snapshots, SSH, egress, and volumes"
+  default_prompt: "Use $instavm to create or manage an InstaVM VM, snapshot, share, SSH key, egress policy, or volume for this task."

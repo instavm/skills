@@ -67,6 +67,7 @@ vm = client.vms.create(
 )
 
 vm_id = vm["vm_id"]
+vm = client.vms.get(vm_id)
 ```
 
 Inspect or mutate it:
@@ -79,3 +80,18 @@ client.vms.delete(vm_id)
 ```
 
 Use a read-back call after mutation so the user gets the resulting state, not just the action attempt.
+
+## VM creation gotchas
+
+- Do not rely on the default VM lifetime. Set `vm_lifetime_seconds` explicitly for anything user-facing.
+- After creation, read back the VM record and keep `vm_id`, `status`, and `session_id` if the API returns them.
+- If a rich create payload is rejected, do not guess field combinations repeatedly. Capture the real validation body, retry with a minimal create payload, then patch fields with `client.vms.update(...)`.
+
+Minimal fallback:
+
+```python
+vm = client.vms.create(wait=True, vm_lifetime_seconds=86400)
+vm_id = vm["vm_id"]
+client.vms.update(vm_id, metadata={"project": "agent-task"})
+vm = client.vms.get(vm_id)
+```

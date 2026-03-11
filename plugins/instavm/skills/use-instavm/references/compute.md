@@ -2,6 +2,21 @@
 
 Run commands, move files through a session, and capture reusable machine state.
 
+## Bind a created VM back onto the session helpers
+
+Some SDK surfaces expose `execute()` and `upload_file()` for sessions, while VM lifecycle lives under `client.vms.*`. When a created VM has a usable `session_id`, bind it back onto the client instead of switching to brittle SSH copy flows.
+
+```python
+vm = client.vms.get(vm_id)
+session_id = vm["session_id"]
+
+client.session_id = session_id
+client.execute("pwd && python3 --version", language="bash")
+client.upload_file("./app.js", "/app/app.js")
+```
+
+If the VM record does not include `session_id`, inspect the latest session info before falling back to SSH.
+
 ## Execution
 
 Simple execution:
@@ -33,6 +48,8 @@ client.upload_file("local_script.py", "/app/local_script.py")
 client.execute("python /app/local_script.py", language="bash")
 client.download_file("output.json", local_path="./output.json")
 ```
+
+Prefer this path over `scp` when you already have a valid session for the target VM.
 
 ## Snapshot a running VM
 

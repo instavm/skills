@@ -34,6 +34,28 @@ ssh instavm.dev ls
 ssh instavm.dev clone <vm_id>
 ```
 
+If SSH is denied but the account already has registered keys, do not assume `~/.ssh/id_ed25519` is the correct one. Match the account's registered public keys against local `~/.ssh/*.pub` files and use the private key for the matching public key.
+
+## Identity and writable path gotcha
+
+Do not assume the SSH user and the SDK execution user are the same.
+
+- `execute()` / `upload_file()` may run as a root-backed session in `/app`
+- SSH may log in as a non-root user such as `appuser` with `HOME=/home/appuser`
+
+So `/app` can be writable via the SDK path but not writable over SSH.
+
+Check before you deploy through SSH:
+
+```bash
+id
+pwd
+echo "HOME=$HOME"
+stat -c "%A %U:%G %n" / /app "$HOME"
+```
+
+If you are deploying over SSH, prefer `~/...` unless you deliberately bootstrap `/app` ownership.
+
 ## Shares
 
 Expose a port from a VM:
@@ -44,6 +66,8 @@ client.shares.update(share_id=share["share_id"], is_public=True)
 ```
 
 For ephemeral apps, use `session_id` instead of `vm_id`.
+
+After creating a share, verify it externally. A successful share creation call is not enough.
 
 ## Egress
 
@@ -94,3 +118,5 @@ client.custom_domains.delete(domain["id"])
 ```
 
 Use custom domains only when the user actually needs a stable hostname.
+
+Share URLs are tied to the backing session or VM. If the compute dies, the share dies too. Use a custom domain only after the underlying VM lifetime is correct.

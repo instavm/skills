@@ -2,10 +2,11 @@
 name: use-instavm
 description: >
   Operate InstaVM infrastructure: run ephemeral sessions, create or manage VMs,
-  take snapshots, clone machines, register SSH keys, expose shares, set egress,
-  mount volumes, and use platform APIs. Use this whenever the user mentions
-  InstaVM, instavm.io, the `instavm` Python SDK, `ssh instavm.dev`, or VM
-  lifecycle work, even if they do not explicitly say "InstaVM".
+  host or deploy apps, take snapshots, clone machines, register SSH keys,
+  expose shares, set egress, mount volumes, and use platform APIs. Use this
+  whenever the user mentions InstaVM, instavm.io, the `instavm` Python SDK,
+  `ssh instavm.dev`, app hosting, or VM lifecycle work, even if they do not
+  explicitly say "InstaVM".
 ---
 
 # Use InstaVM
@@ -36,6 +37,7 @@ Load only the reference you need. Two references are usually enough, even for mu
 | Intent | Reference | Use for |
 |---|---|---|
 | Install, authenticate, choose session vs VM, create or delete compute | [setup.md](references/setup.md) | SDK install, API key handling, session basics, VM CRUD, context checks |
+| Host or deploy an app | [hosting.md](references/hosting.md) | static sites, simple web apps, long-lived servers, shares, deploy verification |
 | Run code, transfer files, snapshot, clone, or build from OCI | [compute.md](references/compute.md) | execution, uploads/downloads, async jobs, VM snapshots, OCI snapshots |
 | Connect to a machine or expose it to the network | [access.md](references/access.md) | SSH keys, `ssh instavm.dev`, shares, egress, custom domains |
 | Persist or move data | [storage.md](references/storage.md) | volumes, checkpoints, mounts, file operations |
@@ -53,6 +55,7 @@ Load only the reference you need. Two references are usually enough, even for mu
 ## Composition patterns
 
 - **Bootstrap a working VM**: setup -> compute -> access
+- **Host a static site or small web app**: setup -> hosting -> access
 - **Create a reusable base image**: setup -> compute
 - **Create a persistent worker**: setup -> storage -> access
 - **Handle an SDK gap**: relevant operational reference -> platform

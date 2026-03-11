@@ -40,6 +40,7 @@ This repo currently ships one installable skill:
 
 - ephemeral code execution sessions
 - durable VM lifecycle operations
+- static site and small app hosting
 - VM snapshots and clones
 - OCI-image snapshot builds
 - SSH key registration and SSH access
@@ -66,6 +67,7 @@ skills/
 │               │   ├── access.md
 │               │   ├── cli.md
 │               │   ├── compute.md
+│               │   ├── hosting.md
 │               │   ├── platform.md
 │               │   ├── setup.md
 │               │   └── storage.md

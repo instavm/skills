@@ -24,9 +24,10 @@ description: >
 
 Before any mutation:
 
-1. Ensure an API key is available.
-2. Probe the installed SDK surface before assuming helper names.
-3. If a native `instavm` CLI exists later, prefer it only when it is clearly the shortest path.
+1. For live deploy, host, create, update, snapshot, or delete requests, verify authentication first.
+2. If no API key or authenticated CLI path is available, stop and ask for credentials. Do not spend time generating deploy scripts, repo changes, or long offline setup unless the user explicitly asks for offline preparation.
+3. After auth is confirmed, probe the installed SDK surface before assuming helper names.
+4. If a native `instavm` CLI exists later, prefer it only when it is clearly the shortest path.
 
 Load [setup.md](references/setup.md) for exact install, auth, and surface-probe steps.
 
@@ -50,8 +51,9 @@ Load only the reference you need. Two references are usually enough, even for mu
 2. Detect capability before use. For SDK, inspect attributes or method signatures. For CLI, use `--help` only if the binary exists. Fetch the latest OpenAPI or live docs only when capability is unclear, a field may be unsupported, or you need a REST fallback.
 3. Use a session for short-lived execution. Use a VM for SSH, shares, mounted volumes, or user-facing hosting.
 4. Keep egress narrow and shares private unless the user explicitly wants broader access.
-5. After mutation, read the resource back. If a field is ignored or missing in the follow-up state, treat that capability as unsupported in the current environment.
-6. If the installed SDK lacks the needed helper, use raw HTTP only after checking the latest schema.
+5. For live infrastructure requests, a quick repo inspection is fine, but do not do multi-minute offline scaffolding before auth is confirmed.
+6. After mutation, read the resource back. If a field is ignored or missing in the follow-up state, treat that capability as unsupported in the current environment.
+7. If the installed SDK lacks the needed helper, use raw HTTP only after checking the latest schema.
 
 ## Composition patterns
 

@@ -10,6 +10,21 @@ pip install -U instavm
 
 Use `INSTAVM_API_KEY` when possible. If the local repo already uses `INSTA_API_KEY`, follow that convention instead of fighting it.
 
+For live infrastructure work, check auth before deeper repo work or script writing:
+
+```bash
+python3 - <<'PY'
+import importlib.util
+import os
+
+print("instavm_installed", importlib.util.find_spec("instavm") is not None)
+print("has_INSTAVM_API_KEY", bool(os.environ.get("INSTAVM_API_KEY")))
+print("has_INSTA_API_KEY", bool(os.environ.get("INSTA_API_KEY")))
+PY
+```
+
+If the task is to actually deploy, create, update, snapshot, share, or delete resources and auth is missing, stop and ask for credentials. Only continue into offline prep if the user explicitly wants a script or dry-run path.
+
 Probe the installed client before you assume helper names:
 
 ```python

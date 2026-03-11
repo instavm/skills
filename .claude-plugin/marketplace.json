@@ -1,0 +1,28 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "instavm-skills",
+  "owner": {
+    "name": "InstaVM",
+    "email": "hello@instavm.io"
+  },
+  "metadata": {
+    "description": "InstaVM agent skills for Claude Code",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "instavm",
+      "description": "InstaVM skill for sessions, VMs, snapshots, SSH, egress, shares, and volumes",
+      "author": {
+        "name": "InstaVM"
+      },
+      "source": "./",
+      "version": "1.0.0",
+      "category": "productivity",
+      "strict": false,
+      "skills": [
+        "./"
+      ]
+    }
+  ]
+}

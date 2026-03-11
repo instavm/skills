@@ -84,14 +84,18 @@ Use a read-back call after mutation so the user gets the resulting state, not ju
 ## VM creation gotchas
 
 - Do not rely on the default VM lifetime. Set `vm_lifetime_seconds` explicitly for anything user-facing.
-- Unless the live API or account docs say otherwise, treat `86400` seconds as the practical upper bound and do not assume multi-day lifetimes are supported.
+- Keep the requested lifetime in one variable near the create or update call so later account or plan changes are a one-line change, not a hunt for scattered `86400` literals.
+- Do not conflate the session constructor `InstaVM(timeout=...)` range with managed VM lifetime. The local SDK forwards payload on both `client.vms.create(...)` and `client.vms.update(...)`, but live backend support for `vm_lifetime_seconds` on `PATCH /v1/vms/{vm_id}` must be confirmed before you rely on it.
 - After creation, read back the VM record and keep `vm_id`, `status`, and `session_id` if the API returns them.
-- If a rich create payload is rejected, do not guess field combinations repeatedly. Capture the real validation body, retry with a minimal create payload, then patch fields with `client.vms.update(...)`.
+- If a rich create payload is rejected, do not guess field combinations repeatedly. Capture the real validation body, retry with a minimal create payload, then patch only fields the live API clearly supports.
+- Treat `vm_lifetime_seconds` as a create-time field unless the live API or account environment proves lifetime updates are supported on `PATCH /v1/vms/{vm_id}`.
+- If the VM API accepts a larger lifetime such as `604800` on create, treat the successful response and subsequent read-back state as authoritative for that account.
 
 Minimal fallback:
 
 ```python
-vm = client.vms.create(wait=True, vm_lifetime_seconds=86400)
+requested_lifetime_seconds = 86400  # current safe baseline unless the live VM API for this account allows more
+vm = client.vms.create(wait=True, vm_lifetime_seconds=requested_lifetime_seconds)
 vm_id = vm["vm_id"]
 client.vms.update(vm_id, metadata={"project": "agent-task"})
 vm = client.vms.get(vm_id)

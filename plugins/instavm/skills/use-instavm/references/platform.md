@@ -2,6 +2,33 @@
 
 Use advanced control-plane APIs and fall back to raw HTTP when the SDK is missing a needed feature.
 
+## Compatibility precedence
+
+When product surfaces disagree, use this order:
+
+1. Successful live CLI or SDK behavior plus a read-back call
+2. Latest OpenAPI or live docs
+3. Local docs, tests, or repo examples
+4. Skill text
+
+Do not assume a `200` means a field was applied. If a follow-up `get`, `list`, or equivalent state read does not show the change, treat the field as unsupported or ignored in that environment.
+
+## When to fetch OpenAPI or docs
+
+Do not fetch OpenAPI on every InstaVM task. Load it only when one of these is true:
+
+1. The installed SDK is missing the helper you need.
+2. A field or route may be unsupported and you need to confirm the live contract.
+3. CLI output, SDK behavior, and local examples disagree.
+4. You need a raw REST call for a newer feature.
+
+Default order:
+
+1. Inspect the installed SDK
+2. Try the live capability with a safe read or create call
+3. Read the latest OpenAPI or live docs if the contract is still unclear
+4. Fall back to raw HTTP
+
 ## Computer-use and browser
 
 Computer-use viewer:
@@ -75,4 +102,4 @@ response.raise_for_status()
 print(response.json())
 ```
 
-Confirm request fields against the latest OpenAPI or docs before you use REST for newer features or SDK gaps.
+Confirm request fields against the latest OpenAPI or docs before you use REST for newer features or SDK gaps. After any REST mutation, follow with a read-back request before you report success.

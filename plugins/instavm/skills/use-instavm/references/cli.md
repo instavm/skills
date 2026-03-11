@@ -15,11 +15,14 @@ instavm <subcommand> --help
 
 `ssh instavm.dev ...` is also a valid command-line surface when it is configured locally.
 
+Do not infer CLI commands from old examples or skill text. Discover the actual command tree from `instavm --help` and the relevant subcommand help in the current environment.
+
 ## Selection rule
 
 - Prefer CLI when it can do the job in fewer steps than the SDK and the output is easy to read back.
 - Prefer the SDK when you need precise structured calls, Python control flow, or features that are already exposed there.
 - Use raw HTTP only when neither CLI nor SDK covers the task.
+- If CLI and SDK disagree, trust the path that succeeds and can be confirmed with a follow-up read-back.
 
 ## Future expansion
 

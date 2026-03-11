@@ -94,7 +94,7 @@ client.vms.update(vm_id, metadata={"project": "agent-task", "owner": "agent"})
 client.vms.delete(vm_id)
 ```
 
-Use a read-back call after mutation so the user gets the resulting state, not just the action attempt.
+Use a read-back call after mutation so the user gets the resulting state, not just the action attempt. Prefer `client.vms.get(vm_id)` for single-VM read-back. If an older environment still has a route mismatch, fall back to `client.vms.list()` plus filtering.
 
 ## VM creation gotchas
 
@@ -105,6 +105,7 @@ Use a read-back call after mutation so the user gets the resulting state, not ju
 - If a rich create payload is rejected, do not guess field combinations repeatedly. Capture the real validation body, retry with a minimal create payload, then patch only fields the live API clearly supports.
 - Treat `vm_lifetime_seconds` as a create-time field unless the live API or account environment proves lifetime updates are supported on `PATCH /v1/vms/{vm_id}`.
 - If the VM API accepts a larger lifetime such as `604800` on create, treat the successful response and subsequent read-back state as authoritative for that account.
+- If `client.vms.get(vm_id)` fails but `list()` works, treat that as an older-environment mismatch, not proof that the VM was not created.
 
 Minimal fallback:
 
@@ -113,5 +114,8 @@ requested_lifetime_seconds = 86400  # current safe baseline unless the live VM A
 vm = client.vms.create(wait=True, vm_lifetime_seconds=requested_lifetime_seconds)
 vm_id = vm["vm_id"]
 client.vms.update(vm_id, metadata={"project": "agent-task"})
-vm = client.vms.get(vm_id)
+try:
+    vm = client.vms.get(vm_id)
+except Exception:
+    vm = next(v for v in client.vms.list() if v["vm_id"] == vm_id)
 ```

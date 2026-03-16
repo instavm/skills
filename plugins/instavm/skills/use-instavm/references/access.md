@@ -36,6 +36,21 @@ ssh instavm.dev clone <vm_id>
 
 If SSH is denied but the account already has registered keys, do not assume `~/.ssh/id_ed25519` is the correct one. Match the account's registered public keys against local `~/.ssh/*.pub` files and use the private key for the matching public key.
 
+If the API returns SSH-key fingerprints, compare those fingerprints before you assume the VM is broken:
+
+```python
+for key in client.list_ssh_keys():
+    print(key.get("fingerprint"), key.get("name"))
+```
+
+```bash
+for key in ~/.ssh/*.pub; do
+  ssh-keygen -lf "$key"
+done
+```
+
+If the API does not expose fingerprints in the current environment, fall back to exact public-key matching.
+
 ## Identity and writable path gotcha
 
 Do not assume the SSH user and the SDK execution user are the same.
@@ -72,6 +87,24 @@ After creating a share, verify it externally. A successful share creation call i
 ## Egress
 
 Keep egress as narrow as the workload allows.
+
+If you already know the custom egress policy at provision time, prefer setting `egress_policy` on `client.vms.create(...)` so the VM starts with the intended network rules instead of relying on a later update.
+
+At creation time:
+
+```python
+vm = client.vms.create(
+    wait=True,
+    vm_lifetime_seconds=3600,
+    egress_policy={
+        "allow_package_managers": True,
+        "allow_http": False,
+        "allow_https": True,
+        "allowed_domains": ["api.example.com", "pypi.org", "files.pythonhosted.org"],
+        "allowed_cidrs": [],
+    },
+)
+```
 
 For a VM:
 

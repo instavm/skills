@@ -90,7 +90,11 @@ import os
 import requests
 
 api_key = os.environ.get("INSTAVM_API_KEY") or os.environ["INSTA_API_KEY"]
-headers = {"X-API-Key": api_key}
+headers = (
+    {"X-API-Key": api_key}
+    if api_key.startswith("instavm_sk_")
+    else {"Authorization": f"Bearer {api_key}"}
+)
 
 response = requests.post(
     "https://api.instavm.io/v1/vms",
@@ -101,5 +105,7 @@ response = requests.post(
 response.raise_for_status()
 print(response.json())
 ```
+
+For `instavm_sk_...` API keys, prefer `X-API-Key` first. Do not assume `Authorization: Bearer ...` will work for API-key-backed endpoints.
 
 Confirm request fields against the latest OpenAPI or docs before you use REST for newer features or SDK gaps. After any REST mutation, follow with a read-back request before you report success.

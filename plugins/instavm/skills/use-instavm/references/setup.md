@@ -10,6 +10,8 @@ pip install -U instavm
 
 Use `INSTAVM_API_KEY` when possible. If the local repo already uses `INSTA_API_KEY`, follow that convention instead of fighting it.
 
+For raw HTTP calls, treat `instavm_sk_...` values as API keys, not bearer tokens. Try `X-API-Key` first unless the live docs for that endpoint clearly say otherwise.
+
 For live infrastructure work, check auth before deeper repo work or script writing:
 
 ```bash

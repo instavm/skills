@@ -72,44 +72,77 @@ Do not assume `/app` is writable over SSH.
 
 For SSH-driven deployments, use `~/app-name` unless you have already changed `/app` ownership.
 
+## Python path on VMs
+
+Always use `/usr/local/bin/python3` — this is the correct Python (3.13) on InstaVM VMs. Use it in `ExecStart` in service files and in any direct shell invocations. Only fall back to probing with `which python3` if `/usr/local/bin/python3` doesn't exist.
+
+## Installing packages
+
+Use `python3 -m pip` — the pip binary may not be on PATH but the module works:
+
+```bash
+/usr/local/bin/python3 -m pip install flask dspy-ai openai --quiet
+```
+
+Many system binaries (`tail`, `grep`, `apt-get`) may fail with `Exec format error` in bash. Avoid pipes — do any filtering in Python instead, or run commands separately.
+
 ## Run the app as a daemon service
 
 For hosted apps, do not leave the server tied to a one-off shell. Install a service that restarts on boot so VM restart features work without manual intervention.
 
 Prefer `systemd` when it is available and you have the needed permissions. Keep the app under a stable path and point the service at that path.
 
-```ini
-[Unit]
-Description=music-maker
+**Always use `/usr/local/bin/python3`** in `ExecStart`, not `/usr/bin/python3`.
+
+**Write the service file via Python** to avoid shell escaping issues:
+
+```python
+svc = """[Unit]
+Description=my-app
 After=network.target
 
 [Service]
-WorkingDirectory=/app/music-maker
-ExecStart=/usr/bin/python3 -m http.server 8080 --directory /app/music-maker
+WorkingDirectory=/app/my-app
+Environment=MY_VAR=value
+ExecStart=/usr/local/bin/python3 /app/my-app/app.py
 Restart=always
 RestartSec=3
 
 [Install]
 WantedBy=multi-user.target
+"""
+client.execute(
+    f'python3 -c "open(\'/etc/systemd/system/my-app.service\', \'w\').write({repr(svc)})"',
+    language="bash"
+)
 ```
 
-Typical bootstrapping flow:
+Typical bootstrapping flow (run as separate execute calls, not piped):
 
-```bash
-install -D -m 0644 music-maker.service /etc/systemd/system/music-maker.service
-systemctl daemon-reload
-systemctl enable --now music-maker.service
-systemctl status --no-pager music-maker.service
+```python
+client.execute("systemctl daemon-reload", language="bash")
+client.execute("systemctl enable --now my-app.service", language="bash")
+client.execute("systemctl status --no-pager my-app.service", language="bash")
 ```
+
+**Verify systemd actually works first** — in some VM environments systemctl crashes with segfaults or illegal instruction errors. If that happens, fall back to `execute_async(...)`.
 
 Then verify restart behavior before you claim success:
 
-```bash
-systemctl restart music-maker.service
-curl -I http://127.0.0.1:8080
+```python
+client.execute("systemctl restart my-app.service", language="bash")
+# curl via Python since /usr/bin/curl may also be broken
+client.execute("""
+import urllib.request
+try:
+    r = urllib.request.urlopen('http://127.0.0.1:8080/', timeout=5)
+    print('HTTP', r.status)
+except Exception as e:
+    print('ERROR', e)
+""", language="python")
 ```
 
-Use `execute_async(...)` only as a fallback for temporary demos or environments where no init/service manager is available.
+Use `execute_async(...)` as a fallback when systemd is unavailable or crashes.
 
 ## Expose and verify
 

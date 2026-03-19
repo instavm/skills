@@ -42,6 +42,7 @@ Do not assume the SSH user and the SDK execution user are the same.
 
 - `execute()` / `upload_file()` may run as a root-backed session in `/app`
 - SSH may log in as a non-root user such as `appuser` with `HOME=/home/appuser`
+- SDK uploads are most reliable when staged under `/app`, then moved or extracted into the final path with a follow-up command
 
 So `/app` can be writable via the SDK path but not writable over SSH.
 
@@ -72,6 +73,24 @@ After creating a share, verify it externally. A successful share creation call i
 ## Egress
 
 Keep egress as narrow as the workload allows.
+
+If you already know the outbound dependencies at provision time, prefer `egress_policy` on `client.vms.create(...)` so bootstrap steps do not fail before you get a chance to call `set_vm_egress(...)`.
+
+At creation time:
+
+```python
+vm = client.vms.create(
+    wait=True,
+    vm_lifetime_seconds=3600,
+    egress_policy={
+        "allow_package_managers": True,
+        "allow_http": False,
+        "allow_https": True,
+        "allowed_domains": ["registry.npmjs.org", "fonts.googleapis.com", "fonts.gstatic.com"],
+        "allowed_cidrs": [],
+    },
+)
+```
 
 For a VM:
 

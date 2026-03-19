@@ -50,7 +50,7 @@ Load only the reference you need. Two references are usually enough, even for mu
 1. Trust the live product surface over skill text: start with the installed SDK, actual CLI help if a CLI exists, and read-back state from the API after mutations.
 2. Detect capability before use. For SDK, inspect attributes or method signatures. For CLI, use `--help` only if the binary exists. Fetch the latest OpenAPI or live docs only when capability is unclear, a field may be unsupported, or you need a REST fallback.
 3. Use a session for short-lived execution. Use a VM for SSH, shares, mounted volumes, or user-facing hosting.
-4. Keep egress narrow and shares private unless the user explicitly wants broader access.
+4. Keep egress narrow and shares private unless the user explicitly wants broader access. If build-time or runtime outbound dependencies are already known, prefer setting `egress_policy` on `client.vms.create(...)` so the VM starts with the needed access.
 5. For live infrastructure requests, a quick repo inspection is fine, but do not do multi-minute offline scaffolding before auth is confirmed.
 6. After mutation, read the resource back. If a field is ignored or missing in the follow-up state, treat that capability as unsupported in the current environment.
 7. If the installed SDK lacks the needed helper, use raw HTTP only after checking the latest schema.

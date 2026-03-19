@@ -18,15 +18,43 @@ If the user asked for a live deployment, verify auth before you write deploy scr
 
 ## Recommended static hosting flow
 
-1. Create a VM with an explicit lifetime.
-2. Read back the VM record and capture `vm_id`, `status`, and `session_id`.
-3. Bind `client.session_id` to that VM session when possible.
-4. Upload files with `upload_file(...)`.
-5. Install and enable a daemon service for the app.
-6. Create a public share for the port.
-7. Verify the daemon really starts and survives a restart.
-8. Verify the share externally with `curl -I`.
-9. Tighten egress after upload if the app does not need outbound access.
+1. If the build or runtime already has known outbound dependencies, decide the VM egress policy first.
+2. Create a VM with an explicit lifetime.
+3. Read back the VM record and capture `vm_id`, `status`, and `session_id`.
+4. Bind `client.session_id` to that VM session when possible.
+5. Upload files with `upload_file(...)`.
+6. Install and enable a daemon service for the app.
+7. Create a public share for the port.
+8. Verify the daemon really starts and survives a restart.
+9. Verify the share externally with `curl -I`.
+10. Tighten egress after upload if the app does not need broader outbound access.
+
+## Create-time egress rule
+
+If you already know the deploy needs outbound network access, prefer passing `egress_policy` at VM creation time instead of creating the VM first and patching egress later.
+
+This matters most for bootstrap steps that run immediately after the VM comes up, such as package installs, remote font downloads during a web build, access to model APIs, registries, or other third-party build-time fetches.
+
+```python
+vm = client.vms.create(
+    wait=True,
+    vm_lifetime_seconds=86400,
+    egress_policy={
+        "allow_package_managers": True,
+        "allow_http": False,
+        "allow_https": True,
+        "allowed_domains": [
+            "registry.npmjs.org",
+            "fonts.googleapis.com",
+            "fonts.gstatic.com",
+            "api.openai.com",
+        ],
+        "allowed_cidrs": [],
+    },
+)
+```
+
+Use `client.set_vm_egress(...)` later when you need to tighten or adjust the policy, but do not rely on a later patch to fix a bootstrap that already needed network access.
 
 ## VM lifetime rule
 
@@ -53,22 +81,27 @@ If the VM has a usable `session_id`, do this:
 vm = client.vms.get(vm_id)
 client.session_id = vm["session_id"]
 
-client.execute("mkdir -p /app/music-maker/examples", language="bash")
-client.upload_file("./index.html", "/app/music-maker/index.html")
-client.upload_file("./app.js", "/app/music-maker/app.js")
-client.upload_file("./styles.css", "/app/music-maker/styles.css")
+client.execute("mkdir -p /app/music-maker-stage", language="bash")
+client.upload_file("./site.tar.gz", "/app/music-maker-stage/site.tar.gz")
+client.execute(
+    "mkdir -p /opt/music-maker && tar -xzf /app/music-maker-stage/site.tar.gz -C /opt/music-maker --strip-components=1",
+    language="bash",
+)
 ```
 
 This avoids `scp` issues through the SSH proxy layer.
+
+Treat `/app` as the reliable SDK upload staging area. Do not assume arbitrary absolute destinations such as `/opt/...` or `/etc/...` are valid upload targets in the current environment. Upload into `/app` first, then move, extract, or `install` files into their final locations with a follow-up command.
 
 If you must use SSH and `scp` fails, use tar-over-SSH before you spend time debugging the SCP subsystem.
 
 ## Writable path rule
 
-Do not assume `/app` is writable over SSH.
+Do not assume `/app` is writable over SSH, and do not assume every absolute path is a valid SDK upload target.
 
 - SDK session operations may write into `/app`
 - SSH may log in as a non-root user that cannot write there
+- SDK uploads are most reliable when staged under `/app`, then moved into the final path with a shell command
 
 For SSH-driven deployments, use `~/app-name` unless you have already changed `/app` ownership.
 

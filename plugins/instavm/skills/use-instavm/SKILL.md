@@ -7,9 +7,12 @@ description: >
   whenever the user mentions InstaVM, instavm.io, the `instavm` Python SDK,
   `ssh instavm.dev`, app hosting, or VM lifecycle work, even if they do not
   explicitly say "InstaVM".
+allowed-tools: Bash(instavm:*), Bash(python3:*), Bash(pip:*), Bash(ssh:*), Bash(curl:*), Bash(which:*)
 ---
 
 # Use InstaVM
+
+Manage VMs, sessions, snapshots, shares, volumes, and platform APIs on InstaVM infrastructure.
 
 ## InstaVM resource model
 

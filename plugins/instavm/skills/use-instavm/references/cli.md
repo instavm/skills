@@ -14,8 +14,9 @@ instavm --version
 
 `ssh instavm.dev ...` is also a valid command-line surface when it is configured locally.
 
-Do not infer CLI commands from old examples or stale memory.
-Start with the documented command for the task. Use `instavm --help` or `instavm <subcommand> --help` only when you hit uncertainty, a missing command, or version skew.
+Start with the commands documented in this skill and its references.
+Do not invent CLI commands from memory or unrelated old examples.
+Use `instavm --help` or `instavm <subcommand> --help` only when the documented path is missing, ambiguous, or fails.
 
 ## Auth and identity
 

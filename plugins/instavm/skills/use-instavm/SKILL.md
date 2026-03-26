@@ -1,18 +1,18 @@
 ---
 name: use-instavm
 description: >
-  Operate InstaVM infrastructure: run ephemeral sessions, create or manage VMs,
-  host or deploy apps, take snapshots, clone machines, register SSH keys,
-  expose shares, set egress, mount volumes, and use platform APIs. Use this
-  whenever the user mentions InstaVM, instavm.io, the `instavm` Python SDK,
-  `ssh instavm.dev`, app hosting, or VM lifecycle work, even if they do not
-  explicitly say "InstaVM".
+  Use InstaVM to run short-lived sandboxes and durable VMs, host apps, manage
+  storage, snapshots, shares, SSH access, desktop workflows, and platform
+  APIs. Trigger this when the user mentions InstaVM, instavm.io, the `instavm`
+  Python SDK or CLI, `ssh instavm.dev`, app hosting, or VM lifecycle work,
+  even if they do not explicitly say "InstaVM".
 allowed-tools: Bash(instavm:*), Bash(python3:*), Bash(pip:*), Bash(ssh:*), Bash(curl:*), Bash(which:*)
 ---
 
-# Use InstaVM
+# InstaVM Cloud Sandboxes and VMs
 
-Manage VMs, sessions, snapshots, shares, volumes, and platform APIs on InstaVM infrastructure.
+InstaVM is a cloud platform for running short-lived sandboxes and durable VMs, then managing access, storage, snapshots, shares, and desktop workflows around them.
+This skill helps with the practical operator path: create or manage compute, host apps, move data, connect over SSH, and use advanced platform APIs when needed.
 
 ## InstaVM resource model
 

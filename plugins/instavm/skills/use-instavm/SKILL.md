@@ -31,10 +31,10 @@ Before any mutation:
 2. If no API key or authenticated CLI path is available, stop and ask for credentials.
    Do not spend time generating deploy scripts, repo changes, or long offline setup
    unless the user explicitly asks for offline preparation.
-3. After auth is confirmed, probe the installed CLI and SDK surfaces before assuming helper names.
-4. Choose the shortest verified surface: prefer CLI for quick operator work, SDK for orchestration-heavy flows, and raw HTTP only for confirmed gaps.
+3. Make sure `instavm` is installed before you rely on CLI or SDK paths. The package ships both surfaces.
+4. Start with the documented command or helper for the task. Probe CLI help, SDK attributes, or live schema only if the expected path is missing, errors, or looks version-skewed.
 
-Load `references/setup.md` for exact install, auth, and surface-probe steps.
+Load `references/setup.md` for exact install, auth, and fallback-probe steps.
 
 ## Routing
 
@@ -52,20 +52,18 @@ Load only the reference you need. Two references are usually enough, even for mu
 
 ## Execution rules
 
-1. Trust the live product surface over skill text: start with installed CLI help if `instavm` exists, SDK inspection when Python is needed, and read-back state from the API after mutations.
-2. Detect capability before use. For CLI, use `--help` or `help` only if the binary exists.
-   For SDK, inspect attributes or method signatures.
-   Fetch the latest OpenAPI or live docs only when capability is unclear,
-   a field may be unsupported, or you need a REST fallback.
-3. Prefer CLI for short operator workflows that map cleanly to one command or a short sequence:
+1. Make sure `instavm` is installed before using either surface. `pip install -U instavm` provides both the CLI and the Python SDK.
+2. Trust the documented task path first: use the referenced CLI command or SDK helper, then read back state from the API after mutations.
+3. Probe only on demand. Use CLI `--help` or SDK inspection when the expected path fails, a command is missing, or capability is unclear. Fetch live docs or schema only for genuine uncertainty or REST fallback.
+4. Prefer CLI for short operator workflows that map cleanly to one command or a short sequence:
    auth, whoami, docs or billing, VM list/create/delete/clone, share management, SSH key management, desktop actions, and volume operations.
-4. Prefer the SDK for orchestration-heavy tasks: session execution, file upload or download, service setup, deploy flows, loops or conditionals, or any task that benefits from structured Python control flow.
-5. Use a session for short-lived execution. Use a VM for SSH, shares, mounted volumes, or user-facing hosting.
-6. Keep egress narrow and shares private unless the user explicitly wants broader access.
-7. For live infrastructure requests, a quick repo inspection is fine, but do not do multi-minute offline scaffolding before auth is confirmed.
-8. After mutation, read the resource back. If a field is ignored or missing in the follow-up state, treat that capability as unsupported in the current environment.
-9. If CLI and SDK disagree, trust the path that succeeds and can be confirmed with a follow-up read-back.
-10. If neither CLI nor SDK covers the task, use raw HTTP only after checking the latest schema.
+5. Prefer the SDK for orchestration-heavy tasks: session execution, file upload or download, service setup, deploy flows, loops or conditionals, or any task that benefits from structured Python control flow.
+6. Use a session for short-lived execution. Use a VM for SSH, shares, mounted volumes, or user-facing hosting.
+7. Keep egress narrow and shares private unless the user explicitly wants broader access.
+8. For live infrastructure requests, a quick repo inspection is fine, but do not do multi-minute offline scaffolding before auth is confirmed.
+9. After mutation, read the resource back. If a field is ignored or missing in the follow-up state, treat that capability as unsupported in the current environment.
+10. If CLI and SDK disagree, trust the path that succeeds and can be confirmed with a follow-up read-back.
+11. If neither CLI nor SDK covers the task, use raw HTTP only after checking the latest schema.
 
 ## Composition patterns
 

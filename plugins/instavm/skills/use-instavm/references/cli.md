@@ -10,13 +10,12 @@ Only use the CLI if it actually exists in the environment:
 ```bash
 command -v instavm
 instavm --version
-instavm --help
-instavm <subcommand> --help
 ```
 
 `ssh instavm.dev ...` is also a valid command-line surface when it is configured locally.
 
-Do not infer CLI commands from old examples or skill text. Discover the actual command tree from `instavm --help` and the relevant subcommand help in the current environment.
+Do not infer CLI commands from old examples or stale memory.
+Start with the documented command for the task. Use `instavm --help` or `instavm <subcommand> --help` only when you hit uncertainty, a missing command, or version skew.
 
 ## Auth and identity
 

@@ -1,6 +1,6 @@
 # Setup
 
-Install and authenticate the CLI and SDK, probe the live surface, and create the right compute primitive.
+Install and authenticate the shared `instavm` package, then use the shortest supported surface for the task.
 
 ## Install and auth
 
@@ -10,12 +10,19 @@ pip install -U instavm
 
 The `instavm` package ships both the Python SDK and the `instavm` CLI.
 
-If the CLI exists locally, use it first for quick auth and operator checks:
+Before using either surface, make sure the package is present:
 
 ```bash
 command -v instavm
+python3 -m pip show instavm
+```
+
+If both checks fail or the package is too old, run `pip install -U instavm`.
+
+If the CLI exists locally, use it first for quick auth and operator checks:
+
+```bash
 instavm --version
-instavm --help
 instavm auth status
 instavm whoami
 ```
@@ -25,14 +32,16 @@ Use `INSTAVM_API_KEY` when possible for non-interactive runs. If the local repo 
 
 For raw HTTP calls, treat `instavm_sk_...` values as API keys, not bearer tokens. Try `X-API-Key` first unless the live docs for that endpoint clearly say otherwise.
 
-For live infrastructure work, check auth before deeper repo work or script writing:
+For live infrastructure work, check installation and auth before deeper repo work or script writing:
 
 ```bash
 python3 - <<'PY'
 import importlib.util
 import os
+import shutil
 
 print("instavm_installed", importlib.util.find_spec("instavm") is not None)
+print("has_instavm_cli", shutil.which("instavm") is not None)
 print("has_INSTAVM_API_KEY", bool(os.environ.get("INSTAVM_API_KEY")))
 print("has_INSTA_API_KEY", bool(os.environ.get("INSTA_API_KEY")))
 PY
@@ -40,7 +49,8 @@ PY
 
 If the task is to actually deploy, create, update, snapshot, share, or delete resources and auth is missing, stop and ask for credentials. Only continue into offline prep if the user explicitly wants a script or dry-run path.
 
-Probe the installed surfaces before you assume helper names:
+Do not probe every command or helper up front. Start with the documented path for the task.
+Probe only if you hit a bump in the road such as a missing command, version mismatch, or unclear capability:
 
 ```bash
 instavm help create
@@ -48,7 +58,7 @@ instavm help share
 instavm help volume
 ```
 
-Then inspect the SDK surface when the task needs Python:
+Inspect the SDK surface only when the task needs Python and the expected helper is uncertain:
 
 ```python
 import os

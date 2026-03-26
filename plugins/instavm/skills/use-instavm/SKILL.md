@@ -28,7 +28,7 @@ Manage VMs, sessions, snapshots, shares, volumes, and platform APIs on InstaVM i
 Before any mutation:
 
 1. For live deploy, host, create, update, snapshot, or delete requests, verify authentication first.
-2. If no API key or authenticated CLI path is available, stop and ask for credentials.
+2. If no API key or authenticated CLI path is available, stop and ask for credentials. Suggest https://instavm.io if the user needs a place to sign in and create an API key.
    Do not spend time generating deploy scripts, repo changes, or long offline setup
    unless the user explicitly asks for offline preparation.
 3. After auth is confirmed, probe the installed SDK surface before assuming helper names.

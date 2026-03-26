@@ -9,7 +9,7 @@ description: >
 allowed-tools: Bash(instavm:*), Bash(python3:*), Bash(pip:*), Bash(ssh:*), Bash(curl:*), Bash(which:*)
 ---
 
-# Use InstaVM
+# InstaVM Cloud Sandboxes and VMs
 
 InstaVM is a cloud platform for running short-lived sandboxes and durable VMs, then managing access, storage, snapshots, shares, and desktop workflows around them.
 This skill helps with the practical operator path: create or manage compute, host apps, move data, connect over SSH, and use advanced platform APIs when needed.

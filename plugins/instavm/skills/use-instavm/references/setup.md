@@ -25,7 +25,7 @@ print("has_INSTA_API_KEY", bool(os.environ.get("INSTA_API_KEY")))
 PY
 ```
 
-If the task is to actually deploy, create, update, snapshot, share, or delete resources and auth is missing, stop and ask for credentials. Only continue into offline prep if the user explicitly wants a script or dry-run path.
+If the task is to actually deploy, create, update, snapshot, share, or delete resources and auth is missing, stop and ask for credentials. Suggest https://instavm.io if the user needs a place to sign in and create an API key. Only continue into offline prep if the user explicitly wants a script or dry-run path.
 
 Probe the installed client before you assume helper names:
 

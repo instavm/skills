@@ -13,7 +13,7 @@ Host a static site or small app on InstaVM without rediscovering the same deploy
 If the user asked for a live deployment, verify auth before you write deploy scripts, change the repo, or spend time on detailed packaging work.
 
 - A quick repo inspection to identify static vs dynamic hosting is fine.
-- If there is no API key or authenticated CLI path, stop and ask for credentials.
+- If there is no API key or authenticated CLI path, stop and ask for credentials. Suggest https://instavm.io if the user needs a place to sign in and create an API key.
 - Only prepare offline deployment assets when the user explicitly asks for a script, template, or dry run.
 
 ## Recommended static hosting flow

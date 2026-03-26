@@ -5,6 +5,8 @@ Host a static site or small app on InstaVM without rediscovering the same deploy
 ## Choose the deployment path
 
 - For a static site or simple web app, use a durable VM plus a boot-persistent daemon service and a share.
+- Use the CLI for auth, quick VM create or inspect steps, share operations, and `connect` when that is the shortest path.
+- Hosting stays SDK-first once the task needs file transfer, repeated in-VM commands, service installation, or deployment verification.
 - If you can bind a VM `session_id` back onto the SDK, prefer SDK upload and execution over SSH file transfer.
 - Use SSH mainly for manual inspection or when the SDK path is unavailable.
 
@@ -18,12 +20,12 @@ If the user asked for a live deployment, verify auth before you write deploy scr
 
 ## Recommended static hosting flow
 
-1. Create a VM with an explicit lifetime.
+1. Create a VM with an explicit lifetime by CLI or SDK.
 2. Read back the VM record and capture `vm_id`, `status`, and `session_id`.
 3. Bind `client.session_id` to that VM session when possible.
 4. Upload files with `upload_file(...)`.
 5. Install and enable a daemon service for the app.
-6. Create a public share for the port.
+6. Create a public share for the port by CLI or SDK.
 7. Verify the daemon really starts and survives a restart.
 8. Verify the share externally with `curl -I`.
 9. Tighten egress after upload if the app does not need outbound access.

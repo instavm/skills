@@ -32,7 +32,7 @@ This repo currently ships one installable skill:
 
 - [`use-instavm`](plugins/instavm/skills/use-instavm/SKILL.md)
 
-`use-instavm` is route-first. Intent routing is defined in `SKILL.md`, and execution details are split into action-oriented references. It is SDK-first today, with a clean future path for a native InstaVM CLI route.
+`use-instavm` is route-first. Intent routing is defined in `SKILL.md`, and execution details are split into action-oriented references. It uses the installed `instavm` CLI for quick operator workflows, the Python SDK for orchestration-heavy tasks, and raw HTTP only for confirmed gaps.
 
 ## Workflow Coverage
 
@@ -47,6 +47,7 @@ This repo currently ships one installable skill:
 - share creation for exposed ports
 - session and VM egress policy management
 - volume creation, upload, checkpoint, mount, and unmount
+- installed CLI auth, identity, docs, billing, and operator workflows
 - platform APIs such as computer-use, audit, webhooks, and API keys
 
 ## Repository Structure
@@ -79,8 +80,8 @@ skills/
 
 - Keep `SKILL.md` concise and routing-focused.
 - Keep workflow behavior in action-oriented references.
-- Prefer installed SDK method names over docs or memory.
-- Add future native CLI guidance in `references/cli.md` rather than bloating the main skill file.
+- Prefer installed CLI help and SDK method names over docs or memory.
+- Keep CLI-specific guidance in `references/cli.md` rather than bloating the main skill file.
 
 ## References
 

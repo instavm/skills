@@ -1,6 +1,6 @@
 # Setup
 
-Install and authenticate the SDK, probe the client surface, and create the right compute primitive.
+Install and authenticate the CLI and SDK, probe the live surface, and create the right compute primitive.
 
 ## Install and auth
 
@@ -8,7 +8,20 @@ Install and authenticate the SDK, probe the client surface, and create the right
 pip install -U instavm
 ```
 
-Use `INSTAVM_API_KEY` when possible. If the local repo already uses `INSTA_API_KEY`, follow that convention instead of fighting it.
+The `instavm` package ships both the Python SDK and the `instavm` CLI.
+
+If the CLI exists locally, use it first for quick auth and operator checks:
+
+```bash
+command -v instavm
+instavm --version
+instavm --help
+instavm auth status
+instavm whoami
+```
+
+Use `instavm auth set-key` to store a key in `~/.instavm/config.json`.
+Use `INSTAVM_API_KEY` when possible for non-interactive runs. If the local repo already uses `INSTA_API_KEY`, follow that convention instead of fighting it.
 
 For raw HTTP calls, treat `instavm_sk_...` values as API keys, not bearer tokens. Try `X-API-Key` first unless the live docs for that endpoint clearly say otherwise.
 
@@ -27,7 +40,15 @@ PY
 
 If the task is to actually deploy, create, update, snapshot, share, or delete resources and auth is missing, stop and ask for credentials. Only continue into offline prep if the user explicitly wants a script or dry-run path.
 
-Probe the installed client before you assume helper names:
+Probe the installed surfaces before you assume helper names:
+
+```bash
+instavm help create
+instavm help share
+instavm help volume
+```
+
+Then inspect the SDK surface when the task needs Python:
 
 ```python
 import os
@@ -71,6 +92,16 @@ client.close_session()
 ```
 
 ## VMs
+
+Use the CLI for quick VM lifecycle work when JSON or human-readable operator output is enough:
+
+```bash
+instavm create --timeout 3600 --memory 2048 --vcpu 4 -j
+instavm ls -j
+instavm rm <vm_id> -j
+```
+
+Use the SDK when the task needs structured follow-up state or orchestration in Python.
 
 Create a durable VM:
 

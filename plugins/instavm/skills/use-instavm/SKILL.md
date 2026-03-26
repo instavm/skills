@@ -31,8 +31,8 @@ Before any mutation:
 2. If no API key or authenticated CLI path is available, stop and ask for credentials.
    Do not spend time generating deploy scripts, repo changes, or long offline setup
    unless the user explicitly asks for offline preparation.
-3. After auth is confirmed, probe the installed SDK surface before assuming helper names.
-4. If a native `instavm` CLI exists later, prefer it only when it is clearly the shortest path.
+3. After auth is confirmed, probe the installed CLI and SDK surfaces before assuming helper names.
+4. Choose the shortest verified surface: prefer CLI for quick operator work, SDK for orchestration-heavy flows, and raw HTTP only for confirmed gaps.
 
 Load `references/setup.md` for exact install, auth, and surface-probe steps.
 
@@ -48,29 +48,33 @@ Load only the reference you need. Two references are usually enough, even for mu
 - `references/storage.md`: persist or move data with volumes, checkpoints, and mounts.
 - `references/platform.md`:
   advanced APIs and REST fallback.
-- `references/cli.md`: prefer or inspect a future native CLI.
+- `references/cli.md`: CLI discovery, stored auth, command groups, and terminal-native operator workflows.
 
 ## Execution rules
 
-1. Trust the live product surface over skill text: start with the installed SDK, actual CLI help if a CLI exists, and read-back state from the API after mutations.
-2. Detect capability before use. For SDK, inspect attributes or method signatures.
-   For CLI, use `--help` only if the binary exists.
+1. Trust the live product surface over skill text: start with installed CLI help if `instavm` exists, SDK inspection when Python is needed, and read-back state from the API after mutations.
+2. Detect capability before use. For CLI, use `--help` or `help` only if the binary exists.
+   For SDK, inspect attributes or method signatures.
    Fetch the latest OpenAPI or live docs only when capability is unclear,
    a field may be unsupported, or you need a REST fallback.
-3. Use a session for short-lived execution. Use a VM for SSH, shares, mounted volumes, or user-facing hosting.
-4. Keep egress narrow and shares private unless the user explicitly wants broader access.
-5. For live infrastructure requests, a quick repo inspection is fine, but do not do multi-minute offline scaffolding before auth is confirmed.
-6. After mutation, read the resource back. If a field is ignored or missing in the follow-up state, treat that capability as unsupported in the current environment.
-7. If the installed SDK lacks the needed helper, use raw HTTP only after checking the latest schema.
+3. Prefer CLI for short operator workflows that map cleanly to one command or a short sequence:
+   auth, whoami, docs or billing, VM list/create/delete/clone, share management, SSH key management, desktop actions, and volume operations.
+4. Prefer the SDK for orchestration-heavy tasks: session execution, file upload or download, service setup, deploy flows, loops or conditionals, or any task that benefits from structured Python control flow.
+5. Use a session for short-lived execution. Use a VM for SSH, shares, mounted volumes, or user-facing hosting.
+6. Keep egress narrow and shares private unless the user explicitly wants broader access.
+7. For live infrastructure requests, a quick repo inspection is fine, but do not do multi-minute offline scaffolding before auth is confirmed.
+8. After mutation, read the resource back. If a field is ignored or missing in the follow-up state, treat that capability as unsupported in the current environment.
+9. If CLI and SDK disagree, trust the path that succeeds and can be confirmed with a follow-up read-back.
+10. If neither CLI nor SDK covers the task, use raw HTTP only after checking the latest schema.
 
 ## Composition patterns
 
-- **Bootstrap a working VM**: setup -> compute -> access
+- **Create, inspect, or delete infrastructure quickly**: setup -> cli
 - **Host a static site or small web app**: setup -> hosting -> access
+- **Run code or move files inside a machine**: setup -> compute
 - **Create a reusable base image**: setup -> compute
 - **Create a persistent worker**: setup -> storage -> access
-- **Handle an SDK gap**: relevant operational reference -> platform
-- **Add future CLI support**: cli -> relevant operational reference
+- **Handle a CLI or SDK gap**: relevant operational reference -> platform
 
 ## Response format
 

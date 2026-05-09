@@ -2,10 +2,11 @@
 name: use-instavm
 description: >
   Use InstaVM to run short-lived sandboxes and durable VMs, host apps, manage
-  storage, snapshots, shares, SSH access, desktop workflows, and platform
-  APIs. Trigger this when the user mentions InstaVM, instavm.io, the `instavm`
-  Python SDK or CLI, `ssh instavm.dev`, app hosting, or VM lifecycle work,
-  even if they do not explicitly say "InstaVM".
+  storage, snapshots, shares, SSH access, desktop workflows, OpenAI Agents
+  sandbox runs, and platform APIs. Trigger this when the user mentions
+  InstaVM, instavm.io, the `instavm` Python SDK or CLI, `ssh instavm.dev`,
+  app hosting, agent creation on InstaVM, OpenAI Agents sandboxing, or VM
+  lifecycle work, even if they do not explicitly say "InstaVM".
 allowed-tools: Bash(instavm:*), Bash(python3:*), Bash(pip:*), Bash(ssh:*), Bash(curl:*), Bash(which:*)
 ---
 
@@ -21,6 +22,7 @@ This skill helps with the practical operator path: create or manage compute, hos
 - **Snapshot** is a reusable machine image created from a VM or an OCI image.
 - **Share** exposes a port from a session or VM.
 - **Volume** is persistent storage mounted into a VM.
+- **Agent sandbox** is a per-run VM session created through the OpenAI Agents SDK sandbox provider.
 - **Platform APIs** include computer-use, audit, webhooks, API keys, and related control-plane features.
 
 ## Preflight
@@ -46,6 +48,8 @@ Load only the reference you need. Two references are usually enough, even for mu
 - `references/compute.md`: run code, transfer files, snapshot, clone, or build from OCI.
 - `references/access.md`: connect to a machine or expose it to the network.
 - `references/storage.md`: persist or move data with volumes, checkpoints, and mounts.
+- `references/agents.md`: create OpenAI sandbox agents, tune sandbox options,
+  and persist or resume agent state.
 - `references/platform.md`:
   advanced APIs and REST fallback.
 - `references/cli.md`: CLI discovery, stored auth, command groups, and terminal-native operator workflows.
@@ -57,19 +61,22 @@ Load only the reference you need. Two references are usually enough, even for mu
 3. Probe only on demand. Use CLI `--help` or SDK inspection when the expected path fails, a command is missing, or capability is unclear. Fetch live docs or schema only for genuine uncertainty or REST fallback.
 4. Prefer CLI for short operator workflows that map cleanly to one command or a short sequence:
    auth, whoami, docs or billing, VM list/create/delete/clone, share management, SSH key management, desktop actions, and volume operations.
-5. Prefer the SDK for orchestration-heavy tasks: session execution, file upload or download, service setup, deploy flows, loops or conditionals, or any task that benefits from structured Python control flow.
-6. Use a session for short-lived execution. Use a VM for SSH, shares, mounted volumes, or user-facing hosting.
-7. Keep egress narrow and shares private unless the user explicitly wants broader access.
-8. For live infrastructure requests, a quick repo inspection is fine, but do not do multi-minute offline scaffolding before auth is confirmed.
-9. After mutation, read the resource back. If a field is ignored or missing in the follow-up state, treat that capability as unsupported in the current environment.
-10. If CLI and SDK disagree, trust the path that succeeds and can be confirmed with a follow-up read-back.
-11. If neither CLI nor SDK covers the task, use raw HTTP only after checking the latest schema.
+5. Prefer the SDK for orchestration-heavy tasks: session execution, file upload or download, service setup, deploy flows, OpenAI Agents sandbox runs, loops or conditionals, or any task that benefits from structured Python control flow.
+6. If the user asks to create, build, run, or host an agent on InstaVM and they do not name a different agent framework, default to `references/agents.md` and the OpenAI Agents SDK sandbox provider path.
+7. Use a session for short-lived execution. Use a VM for SSH, shares, mounted volumes, or user-facing hosting.
+8. Keep egress narrow and shares private unless the user explicitly wants broader access.
+9. For live infrastructure requests, a quick repo inspection is fine, but do not do multi-minute offline scaffolding before auth is confirmed.
+10. After mutation, read the resource back. If a field is ignored or missing in the follow-up state, treat that capability as unsupported in the current environment.
+11. If CLI and SDK disagree, trust the path that succeeds and can be confirmed with a follow-up read-back.
+12. If neither CLI nor SDK covers the task, use raw HTTP only after checking the latest schema.
 
 ## Composition patterns
 
 - **Create, inspect, or delete infrastructure quickly**: setup -> cli
 - **Host a static site or small web app**: setup -> hosting -> access
 - **Run code or move files inside a machine**: setup -> compute
+- **Create or run an agent on InstaVM**: setup -> agents
+- **Create a stateful or data-heavy sandbox agent**: setup -> agents -> storage
 - **Create a reusable base image**: setup -> compute
 - **Create a persistent worker**: setup -> storage -> access
 - **Handle a CLI or SDK gap**: relevant operational reference -> platform

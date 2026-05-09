@@ -32,7 +32,7 @@ This repo currently ships one installable skill:
 
 - [`use-instavm`](plugins/instavm/skills/use-instavm/SKILL.md)
 
-`use-instavm` is route-first. Intent routing is defined in `SKILL.md`, and execution details are split into action-oriented references. It uses the installed `instavm` CLI for quick operator workflows, the Python SDK for orchestration-heavy tasks, and raw HTTP only for confirmed gaps.
+`use-instavm` is route-first. Intent routing is defined in `SKILL.md`, and execution details are split into action-oriented references. It uses the installed `instavm` CLI for quick operator workflows, the Python SDK for orchestration-heavy tasks, defaults generic InstaVM agent-creation requests to the OpenAI Agents sandbox-provider path, and uses raw HTTP only for confirmed gaps.
 
 ## Workflow Coverage
 
@@ -47,6 +47,7 @@ This repo currently ships one installable skill:
 - share creation for exposed ports
 - session and VM egress policy management
 - volume creation, upload, checkpoint, mount, and unmount
+- agent creation and execution on InstaVM via the OpenAI Agents sandbox provider
 - installed CLI auth, identity, docs, billing, and operator workflows
 - platform APIs such as computer-use, audit, webhooks, and API keys
 
@@ -66,6 +67,7 @@ skills/
 │               │   └── openai.yaml
 │               ├── references/
 │               │   ├── access.md
+│               │   ├── agents.md
 │               │   ├── cli.md
 │               │   ├── compute.md
 │               │   ├── hosting.md
@@ -80,6 +82,7 @@ skills/
 
 - Keep `SKILL.md` concise and routing-focused.
 - Keep workflow behavior in action-oriented references.
+- Add new capability areas as routed reference leaves rather than expanding `SKILL.md` into a long guide.
 - Prefer installed CLI help and SDK method names over docs or memory.
 - Keep CLI-specific guidance in `references/cli.md` rather than bloating the main skill file.
 
